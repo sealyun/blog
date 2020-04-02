@@ -1,3 +1,12 @@
+---
+title: 傻傻分不清楚的kubernetes证书
+date: 2020-04-01
+tags:
+ - kubeadm
+categories:
+ - develop
+---
+
 # 傻傻分不清楚的kubernetes证书 
 
 kubeadm 生成的一坨证书是不是让人很蒙逼，这些东西没那么神奇，来深入扒扒其内裤。
@@ -38,6 +47,7 @@ root@k8s-master:/etc/kubernetes/pki# tree
 非对称加密会生成一个密钥对，如上面的sa.key sa.pub就是密钥对，一个用于加密一个用于解密。
 
 明文 + 公钥 => 密文
+
 密文 + 私钥 => 明文
 
 那么此时没有私钥，就很难把密文解密。
@@ -46,9 +56,9 @@ root@k8s-master:/etc/kubernetes/pki# tree
 
 假设我们想加密一个单词Caesar, 先把它变成一串数字，比如Ascii码 X = 067097101115097114 这也就是我们需要加密的 明码。 现在来对X进行加密。
 
-1. 找两个很大的质数 P 和 Q 计算他们的乘积 N = P * Q  M = (P - 1)(Q - 1)
+1. 找两个很大的质数 P 和 Q 计算他们的乘积 N = P * Q  再令M = (P - 1)(Q - 1)
 2. 找到一个数E满足E和M除了1以外没有公约数
-3. 找到一个数D满足E*D除以M余1, E*D mod M = 1
+3. 找到一个数D满足E乘以D除以M余1, E * D mod M = 1
 
 现在 E就是公钥，可以公开给任何人进行加密
 

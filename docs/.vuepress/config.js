@@ -58,7 +58,6 @@ module.exports = {
     "search": true,
     "searchMaxSuggestions": 10,
     "sidebar": "auto",
-    "lastUpdated": "Last Updated",
     "author": "fanux",
     "record": "xxxx",
     "startYear": "2017"
