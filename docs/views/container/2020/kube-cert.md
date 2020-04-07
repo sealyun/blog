@@ -583,6 +583,57 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 
+# 直接使用https
+
+为了更深入理解kubeconfig里都是啥，证书怎么使用可尝试一下下面操作
+
+查看kubeconfig内容：
+
+```yaml
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRV...
+    server: https://sealyun.com:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: kubernetes-admin
+  user:
+    client-certificate-data: LS0tLS1CRUdJTi...
+    client-key-data: LS0tLS1CRUdJTiBSU0EgU...
+```
+
+注意上面certificate-authority-data client-certificate-data client-key-data三个部分内容，如想直接使用https访问apiserver参考如下步骤即可：
+
+* certificate-authority-data apiserver的根证书  
+* client-certificate-data  用户证书，用户名组名会在证书中
+* client-key-data          用户私钥
+
+1. base64解码上面内容并保存到文件中 分别命名为 ca.crt  user.crt  user.key
+2. 使用curl命令请求apiserver: curl --cacert ./ca.crt --cert ./cert.crt --key ./cert.key https://sealyun.com:6443
+
+返回如下内容表示正常，这里注意你可能无权限访问没授权的资源
+```shell script
+{
+  "paths": [
+    "/api",
+    "/api/v1",
+    "/apis",
+    "/apis/",
+    "/apis/admissionregistration.k8s.io",
+    "/apis/admissionregistration.k8s.io/v1",
+    "/apis/admissionregistration.k8s.io/v1beta
+...
+```
+
 # 总结
 
 证书与k8s的认证原理在集群安装以及开发多租户容器平台时非常有用，希望本文能让大家有个整体细致全面的了解。
