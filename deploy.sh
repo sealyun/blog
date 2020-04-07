@@ -1,9 +1,5 @@
 npm run build 
-git add .
-git commit -m "add"
-git push
-cp -r public/* ../../fanux/blog/
-cd ../../fanux/blog
+cp -r public/* .
 git add .
 git commit -m "add"
 git push
